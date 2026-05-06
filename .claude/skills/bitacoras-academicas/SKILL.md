@@ -57,11 +57,11 @@ BITACORAS/
 **Niveles de ingreso y ubicación:**
 - `Desde cero (0 ventas)` → GENERAL solo
 - `Básico sin ventas` → GENERAL solo
-- `Básico con ventas (10 a 100)` → GENERAL solo
-- `Escalando ventas` → GENERAL solo
+- `Básico con ventas (10 a 100)` → **GENERAL + AVANZADOS/BITACORAS CONSULTOR**
+- `Escalando ventas` → **GENERAL + AVANZADOS/BITACORAS CONSULTOR**
 - `Avanzado (+ de 500 ventas)` → **GENERAL + AVANZADOS/BITACORAS CONSULTOR**
 
-**Avanzados quedan con 2 documentos:**
+**Estudiantes con experiencia en ventas (3 niveles arriba) reciben 2 documentos:**
 - Uno en GENERAL (con link al avanzado)
 - Uno en AVANZADOS/BITACORAS CONSULTOR
 

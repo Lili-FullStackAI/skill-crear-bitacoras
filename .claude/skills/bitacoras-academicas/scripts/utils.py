@@ -104,11 +104,32 @@ def get_folder_names(promocion_str):
 
 def es_avanzado(nivel_ingreso):
     """
-    Retorna True solo si el nivel es "Avanzado (+ de 500 ventas)".
-    Solo ese nivel recibe documento en AVANZADOS/BITACORAS CONSULTOR.
+    Determina si un estudiante recibe documento en AVANZADOS/BITACORAS CONSULTOR
+    además del de GENERAL.
+
+    Niveles SOLO en GENERAL:
+      - Desde cero (0 ventas)
+      - Básico sin ventas
+
+    Niveles en GENERAL + AVANZADOS:
+      - Básico con ventas (10 a 100)
+      - Escalando ventas
+      - Avanzado (+ de 500 ventas)
     """
-    nivel_lower = nivel_ingreso.lower()
-    return "avanzado" in nivel_lower and "500" in nivel_lower
+    if not nivel_ingreso:
+        return False
+
+    nivel_lower = nivel_ingreso.lower().strip()
+
+    # Patterns que disparan AVANZADOS:
+    #  "con ventas"  → "Básico con ventas (10 a 100)"  (no matchea "sin ventas")
+    #  "escalando"   → "Escalando ventas"
+    #  "avanzado"    → "Avanzado (+ de 500 ventas)"
+    return any(pattern in nivel_lower for pattern in [
+        "con ventas",
+        "escalando",
+        "avanzado",
+    ])
 
 
 # ─────────────────────────────────────────────

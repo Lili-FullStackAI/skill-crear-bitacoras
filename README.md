@@ -107,8 +107,8 @@ BITACORAS/
 |-------|---------|-----------|
 | Desde cero (0 ventas) | ✓ | — |
 | Básico sin ventas | ✓ | — |
-| Básico con ventas (10 a 100) | ✓ | — |
-| Escalando ventas | ✓ | — |
+| **Básico con ventas (10 a 100)** | ✓ | ✓ |
+| **Escalando ventas** | ✓ | ✓ |
 | **Avanzado (+ de 500 ventas)** | ✓ | ✓ |
 
 ## Cómo monitorear

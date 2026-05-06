@@ -30,7 +30,7 @@ O desde el repo:
 Settings → Secrets and variables → Actions → New repository secret
 ```
 
-### 2. Agregar estos 8 secrets
+### 2. Agregar estos 7 secrets
 
 | Nombre del Secret | Valor a poner |
 |---|---|
@@ -38,13 +38,14 @@ Settings → Secrets and variables → Actions → New repository secret
 | `GHL_LOCATION_ID` | El Location ID de GHL |
 | `GHL_FIELD_ID_PROMOCION` | ID del custom field "Promoción" |
 | `GHL_FIELD_ID_NIVEL` | ID del custom field "Nivel de ingreso" |
-| `GHL_FIELD_ID_PAIS_VENTA` | ID del custom field "País de venta" |
 | `GHL_FIELD_ID_BITACORA_URL` | ID del custom field "Bitácora URL" |
 | `GHL_FIELD_ID_BITACORA_CONSULTOR_URL` | ID del custom field "Bitácora Consultor URL" |
 | `BITACORAS_ROOT_ID` | ID de la carpeta "BITACORAS" en Google Drive |
 | `GOOGLE_CREDENTIALS_JSON` | **El contenido completo** del JSON del Service Account |
 
-> **Nota:** "País de residencia" NO necesita un secret porque es un **campo estándar** de GHL (`contact.country`), no un custom field. El script lo lee automáticamente.
+> **Notas:**
+> - "País de residencia" NO necesita un secret porque es un **campo estándar** de GHL (`contact.country`).
+> - "País de venta" NO se auto-llena en la bitácora — el consultor lo registra en la sesión 1 (cada estudiante puede vender en múltiples países).
 
 ### 3. Caso especial: `GOOGLE_CREDENTIALS_JSON`
 

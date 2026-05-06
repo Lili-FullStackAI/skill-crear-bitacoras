@@ -21,10 +21,11 @@ class GHLService:
         # IDs de custom fields en GHL (configurables en .env)
         # NOTA: 'pais_residencia' NO está aquí porque es un campo ESTÁNDAR de GHL
         # (contact.country), no un custom field.
+        # NOTA: 'pais_venta' NO se auto-llena — el consultor lo registra en sesión 1
+        # (cada estudiante puede vender en múltiples países).
         self.field_ids = {
             'promocion':               os.getenv('GHL_FIELD_ID_PROMOCION', ''),
             'nivel_de_ingreso':        os.getenv('GHL_FIELD_ID_NIVEL', ''),
-            'pais_venta':              os.getenv('GHL_FIELD_ID_PAIS_VENTA', ''),
             'bitacora_url':            os.getenv('GHL_FIELD_ID_BITACORA_URL', ''),
             'bitacora_consultor_url':  os.getenv('GHL_FIELD_ID_BITACORA_CONSULTOR_URL', ''),
         }
@@ -100,7 +101,6 @@ class GHLService:
             # Custom fields — vienen mapeados por ID
             'promocion':       custom_map.get(self.field_ids['promocion'], ''),
             'nivel':           custom_map.get(self.field_ids['nivel_de_ingreso'], ''),
-            'pais_venta':      custom_map.get(self.field_ids['pais_venta'], ''),
             'tags':            contact.get('tags', [])
         }
 

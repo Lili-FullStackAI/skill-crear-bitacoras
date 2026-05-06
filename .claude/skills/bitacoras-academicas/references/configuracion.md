@@ -12,9 +12,9 @@ GHL_LOCATION_ID=tu_location_id_aqui
 # IDs de los Custom Fields en GHL
 # (se obtienen desde GHL → Settings → Custom Fields)
 # NOTA: pais_residencia NO necesita ID — es campo estándar de GHL (contact.country)
+# NOTA: pais_venta NO se auto-llena — el consultor lo registra en sesión 1
 GHL_FIELD_ID_PROMOCION=
 GHL_FIELD_ID_NIVEL=
-GHL_FIELD_ID_PAIS_VENTA=
 GHL_FIELD_ID_BITACORA_URL=
 GHL_FIELD_ID_BITACORA_CONSULTOR_URL=
 
