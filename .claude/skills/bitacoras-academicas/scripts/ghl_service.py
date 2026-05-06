@@ -19,10 +19,11 @@ class GHLService:
             "Content-Type": "application/json"
         }
         # IDs de custom fields en GHL (configurables en .env)
+        # NOTA: 'pais_residencia' NO está aquí porque es un campo ESTÁNDAR de GHL
+        # (contact.country), no un custom field.
         self.field_ids = {
             'promocion':               os.getenv('GHL_FIELD_ID_PROMOCION', ''),
             'nivel_de_ingreso':        os.getenv('GHL_FIELD_ID_NIVEL', ''),
-            'pais_residencia':         os.getenv('GHL_FIELD_ID_PAIS_RESIDENCIA', ''),
             'pais_venta':              os.getenv('GHL_FIELD_ID_PAIS_VENTA', ''),
             'bitacora_url':            os.getenv('GHL_FIELD_ID_BITACORA_URL', ''),
             'bitacora_consultor_url':  os.getenv('GHL_FIELD_ID_BITACORA_CONSULTOR_URL', ''),
@@ -94,9 +95,11 @@ class GHLService:
             'nombre':          nombre,
             'email':           contact.get('email', ''),
             'telefono':        contact.get('phone', ''),
+            # Campo ESTÁNDAR de GHL — viene directo en el contacto
+            'pais_residencia': contact.get('country', ''),
+            # Custom fields — vienen mapeados por ID
             'promocion':       custom_map.get(self.field_ids['promocion'], ''),
             'nivel':           custom_map.get(self.field_ids['nivel_de_ingreso'], ''),
-            'pais_residencia': custom_map.get(self.field_ids['pais_residencia'], ''),
             'pais_venta':      custom_map.get(self.field_ids['pais_venta'], ''),
             'tags':            contact.get('tags', [])
         }

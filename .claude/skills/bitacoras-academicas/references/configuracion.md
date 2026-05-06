@@ -11,9 +11,9 @@ GHL_LOCATION_ID=tu_location_id_aqui
 
 # IDs de los Custom Fields en GHL
 # (se obtienen desde GHL → Settings → Custom Fields)
+# NOTA: pais_residencia NO necesita ID — es campo estándar de GHL (contact.country)
 GHL_FIELD_ID_PROMOCION=
 GHL_FIELD_ID_NIVEL=
-GHL_FIELD_ID_PAIS_RESIDENCIA=
 GHL_FIELD_ID_PAIS_VENTA=
 GHL_FIELD_ID_BITACORA_URL=
 GHL_FIELD_ID_BITACORA_CONSULTOR_URL=
@@ -54,8 +54,9 @@ Campos que necesitas mapear:
 |-------------------------------------|----------------------------------|
 | GHL_FIELD_ID_PROMOCION              | El campo "Promoción" del contacto|
 | GHL_FIELD_ID_NIVEL                  | "Nivel de ingreso"               |
-| GHL_FIELD_ID_PAIS_RESIDENCIA        | "País de residencia"             |
 | GHL_FIELD_ID_PAIS_VENTA             | "País de venta"                  |
+
+> **País de residencia NO está en esta tabla** porque es un campo **estándar** de GHL (`contact.country`), no custom. El script lo lee directamente sin necesidad de un ID.
 | GHL_FIELD_ID_BITACORA_URL           | "Bitácora URL" (o el que uses)   |
 | GHL_FIELD_ID_BITACORA_CONSULTOR_URL | "Bitácora Consultor URL"         |
 
