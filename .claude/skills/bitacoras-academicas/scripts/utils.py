@@ -143,10 +143,12 @@ def format_log_creada(e):
         f"  Promoción:  {e.get('promocion', '')}",
         f"  Nivel:      {e.get('nivel', '')}",
         f"  Ruta:       {e.get('ruta_general', '')}",
-        f"  Doc General:   {e.get('doc_general_url', 'N/A')}",
+        f"  Doc General:    {e.get('doc_general_url', 'N/A')}",
     ]
     if e.get('doc_avanzado_url'):
-        lines.append(f"  Doc Avanzado:  {e['doc_avanzado_url']}")
+        lines.append(f"  Doc Avanzados:  {e['doc_avanzado_url']}")
+    if e.get('doc_consultor_url'):
+        lines.append(f"  Doc Consultor:  {e['doc_consultor_url']}")
     lines.append(f"  GHL actualizado: {'SÍ' if e.get('ghl_actualizado') else 'NO'}")
     return "\n".join(lines)
 

@@ -92,14 +92,21 @@ BITACORAS/
 └── 2026/
     └── 05. PROM MAYO/
         ├── PROM 10 MAYO 2026/
-        │   ├── GENERAL/
-        │   └── AVANZADOS/
-        │       └── BITACORAS CONSULTOR/
+        │   ├── GENERAL/                          ← bitácora de TODOS los estudiantes
+        │   └── AVANZADOS/                        ← bitácora de estudiantes con experiencia
+        │       └── BITACORAS POR EL CONSULTOR/   ← copia para el consultor
         └── PROM 25 MAYO 2026/
             ├── GENERAL/
             └── AVANZADOS/
-                └── BITACORAS CONSULTOR/
+                └── BITACORAS POR EL CONSULTOR/
 ```
+
+**Estudiantes "avanzados" reciben 3 documentos:**
+- 1 en `GENERAL/` → es el que se comparte con el consultor (link guardado en GHL)
+- 1 en `AVANZADOS/` → para el estudiante
+- 1 en `AVANZADOS/BITACORAS POR EL CONSULTOR/` → copia para el consultor
+
+El consultor pega manualmente el link de la bitácora avanzada dentro del doc GENERAL durante la sesión 1.
 
 ## Niveles de ingreso
 

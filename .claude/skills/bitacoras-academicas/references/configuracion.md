@@ -54,11 +54,12 @@ Campos que necesitas mapear:
 |-------------------------------------|----------------------------------|
 | GHL_FIELD_ID_PROMOCION              | El campo "Promoción" del contacto|
 | GHL_FIELD_ID_NIVEL                  | "Nivel de ingreso"               |
-| GHL_FIELD_ID_PAIS_VENTA             | "País de venta"                  |
-
-> **País de residencia NO está en esta tabla** porque es un campo **estándar** de GHL (`contact.country`), no custom. El script lo lee directamente sin necesidad de un ID.
 | GHL_FIELD_ID_BITACORA_URL           | "Bitácora URL" (o el que uses)   |
-| GHL_FIELD_ID_BITACORA_CONSULTOR_URL | "Bitácora Consultor URL"         |
+
+> **Notas:**
+> - **País de residencia** NO está en esta tabla — es un campo **estándar** de GHL (`contact.country`).
+> - **País de venta** NO se auto-llena — el consultor lo registra en sesión 1.
+> - Solo hay UN campo de link en GHL. Apunta al doc GENERAL. El consultor pega el link del doc avanzado manualmente dentro del GENERAL durante la sesión 1.
 
 > Si los campos `bitacora_url` y `bitacora_consultor_url` no existen, créalos
 > primero en GHL → Settings → Custom Fields → Add Field → URL.

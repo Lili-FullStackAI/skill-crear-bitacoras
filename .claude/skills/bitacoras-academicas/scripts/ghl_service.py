@@ -21,13 +21,14 @@ class GHLService:
         # IDs de custom fields en GHL (configurables en .env)
         # NOTA: 'pais_residencia' NO está aquí porque es un campo ESTÁNDAR de GHL
         # (contact.country), no un custom field.
-        # NOTA: 'pais_venta' NO se auto-llena — el consultor lo registra en sesión 1
-        # (cada estudiante puede vender en múltiples países).
+        # NOTA: 'pais_venta' NO se auto-llena — el consultor lo registra en sesión 1.
+        # NOTA: solo hay UN campo de link en GHL ('bitacora_url') que apunta al doc
+        # GENERAL. El consultor pega manualmente el link de la bitácora avanzada
+        # dentro del doc GENERAL durante la sesión 1.
         self.field_ids = {
-            'promocion':               os.getenv('GHL_FIELD_ID_PROMOCION', ''),
-            'nivel_de_ingreso':        os.getenv('GHL_FIELD_ID_NIVEL', ''),
-            'bitacora_url':            os.getenv('GHL_FIELD_ID_BITACORA_URL', ''),
-            'bitacora_consultor_url':  os.getenv('GHL_FIELD_ID_BITACORA_CONSULTOR_URL', ''),
+            'promocion':        os.getenv('GHL_FIELD_ID_PROMOCION', ''),
+            'nivel_de_ingreso': os.getenv('GHL_FIELD_ID_NIVEL', ''),
+            'bitacora_url':     os.getenv('GHL_FIELD_ID_BITACORA_URL', ''),
         }
 
     # ─────────────────────────────────────────────
@@ -123,10 +124,10 @@ class GHLService:
     # Actualización de contactos
     # ─────────────────────────────────────────────
 
-    def update_contact_bitacora(self, contact_id, doc_general_url, doc_avanzado_url=None):
+    def update_contact_bitacora(self, contact_id, doc_general_url):
         """
         Actualiza el contacto en GHL:
-        - Agrega links de bitácoras en los custom fields
+        - Guarda el link del doc GENERAL en el custom field 'bitacora_url'
         - Agrega etiqueta 'bitacora_creada' SIN quitar otras etiquetas
         - Quita etiqueta 'nuevo estudiante'
         """
@@ -143,19 +144,12 @@ class GHLService:
             if 'bitacora_creada' not in [t.lower() for t in new_tags]:
                 new_tags.append('bitacora_creada')
 
-            # Construir custom fields a actualizar
+            # Solo se guarda el link del doc GENERAL
             fields_to_update = []
-
             if self.field_ids['bitacora_url']:
                 fields_to_update.append({
                     'id': self.field_ids['bitacora_url'],
                     'value': doc_general_url
-                })
-
-            if doc_avanzado_url and self.field_ids['bitacora_consultor_url']:
-                fields_to_update.append({
-                    'id': self.field_ids['bitacora_consultor_url'],
-                    'value': doc_avanzado_url
                 })
 
             payload = {

@@ -46,10 +46,12 @@ BITACORAS/
     └── 05. PROM MAYO
         ├── PROM 10 MAYO 2026/
         │   ├── GENERAL/
-        │   └── AVANZADOS/BITACORAS CONSULTOR/
+        │   └── AVANZADOS/
+        │       └── BITACORAS POR EL CONSULTOR/
         └── PROM 25 MAYO 2026/
             ├── GENERAL/
-            └── AVANZADOS/BITACORAS CONSULTOR/
+            └── AVANZADOS/
+                └── BITACORAS POR EL CONSULTOR/
 ```
 
 ## Reglas importantes

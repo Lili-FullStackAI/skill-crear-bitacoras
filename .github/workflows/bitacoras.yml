@@ -55,7 +55,6 @@ jobs:
           GHL_FIELD_ID_PROMOCION:               ${{ secrets.GHL_FIELD_ID_PROMOCION }}
           GHL_FIELD_ID_NIVEL:                   ${{ secrets.GHL_FIELD_ID_NIVEL }}
           GHL_FIELD_ID_BITACORA_URL:            ${{ secrets.GHL_FIELD_ID_BITACORA_URL }}
-          GHL_FIELD_ID_BITACORA_CONSULTOR_URL:  ${{ secrets.GHL_FIELD_ID_BITACORA_CONSULTOR_URL }}
           # Drive
           BITACORAS_ROOT_ID:                    ${{ secrets.BITACORAS_ROOT_ID }}
           GOOGLE_CREDENTIALS_PATH:              /tmp/google-credentials.json

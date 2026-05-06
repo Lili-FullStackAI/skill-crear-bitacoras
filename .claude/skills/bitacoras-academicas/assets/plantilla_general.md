@@ -15,7 +15,7 @@ Fecha de la sesión:
 Hora de la sesión:
 Consultor:
 Link de la reunión:
-Enlace Bitácora Avanzada: {{ENLACE_AVANZADO}}
+Enlace Bitácora Avanzada: 
 
 ═══════════════════════════════════════════════════════════════
 

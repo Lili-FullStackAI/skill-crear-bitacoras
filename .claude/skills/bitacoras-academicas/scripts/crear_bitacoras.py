@@ -102,47 +102,63 @@ class BitacorasOrquestador:
             return
 
         avanzado = es_avanzado(est['nivel'])
+        titulo = f"Bitacora - {nombre}"
 
-        # ── Documento AVANZADOS (solo si aplica, primero) ─────────
+        # ── Documentos AVANZADOS (solo si aplica) ─────────────────
+        # Se crean DOS copias del mismo documento:
+        #   1. En AVANZADOS/                       → para el estudiante
+        #   2. En AVANZADOS/BITACORAS POR EL CONSULTOR/ → para el consultor
         doc_avanzado_url = None
+        doc_consultor_url = None
         if avanzado:
+            # Copia 1: directo en AVANZADOS/
             doc_adv_id, doc_avanzado_url = self._obtener_o_crear_doc(
-                titulo=f"Bitacora - {nombre}",
+                titulo=titulo,
                 parent_id=carpetas['avanzados'],
                 plantilla='avanzados',
                 estudiante=est,
             )
             if not doc_adv_id:
-                logger.info(format_log_error(est, "Falla al crear documento en AVANZADOS"))
+                logger.info(format_log_error(est, "Falla al crear doc en AVANZADOS"))
+                self.errores += 1
+                return
+
+            # Copia 2: en BITACORAS POR EL CONSULTOR/
+            doc_cons_id, doc_consultor_url = self._obtener_o_crear_doc(
+                titulo=titulo,
+                parent_id=carpetas['consultor'],
+                plantilla='avanzados',
+                estudiante=est,
+            )
+            if not doc_cons_id:
+                logger.info(format_log_error(est, "Falla al crear doc en BITACORAS POR EL CONSULTOR"))
                 self.errores += 1
                 return
 
         # ── Documento GENERAL (todos) ─────────────────────────────
         doc_gen_id, doc_gen_url = self._obtener_o_crear_doc(
-            titulo=f"Bitacora - {nombre}",
+            titulo=titulo,
             parent_id=carpetas['general'],
             plantilla='general',
             estudiante=est,
-            doc_avanzado_url=doc_avanzado_url,
         )
 
         if not doc_gen_id:
-            logger.info(format_log_error(est, "Falla al crear documento en GENERAL"))
+            logger.info(format_log_error(est, "Falla al crear doc en GENERAL"))
             self.errores += 1
             return
 
-        # Si ambos documentos ya existían, registrar y saltar
+        # Si el doc GENERAL ya existía, asumimos que ya fue procesado
         if doc_gen_id.startswith('existe:'):
             logger.info(format_log_existe(est))
             self.existentes += 1
             return
 
         # ── Actualizar GHL ────────────────────────────────────────
-        ghl_ok = self.ghl.update_contact_bitacora(
-            est['id'],
-            doc_gen_url,
-            doc_avanzado_url if avanzado else None
-        )
+        # Solo se guarda el link del doc GENERAL en GHL.
+        # El consultor abre la bitácora GENERAL y pega manualmente
+        # el link de la bitácora avanzada durante la sesión 1.
+        ghl_ok = self.ghl.update_contact_bitacora(est['id'], doc_gen_url)
 
         # ── Log de éxito ──────────────────────────────────────────
         folders = get_folder_names(est['promocion'])
@@ -152,6 +168,7 @@ class BitacorasOrquestador:
         est['doc_general_url'] = doc_gen_url
         if avanzado:
             est['doc_avanzado_url'] = doc_avanzado_url
+            est['doc_consultor_url'] = doc_consultor_url
         est['ghl_actualizado'] = ghl_ok
 
         logger.info(format_log_creada(est))
@@ -186,20 +203,24 @@ class BitacorasOrquestador:
         if not id_avanzados:
             return None
 
-        id_consultor = self.drive.ensure_folder_exists('BITACORAS CONSULTOR', id_avanzados)
+        # Nivel 5 — Subcarpeta dentro de AVANZADOS
+        id_consultor = self.drive.ensure_folder_exists(
+            'BITACORAS POR EL CONSULTOR', id_avanzados
+        )
 
         if not all([id_general, id_consultor]):
             return None
 
         return {
-            'año':      id_año,
-            'mes':      id_mes,
+            'año':       id_año,
+            'mes':       id_mes,
             'promocion': id_promo,
-            'general':  id_general,
-            'avanzados': id_consultor    # apunta a AVANZADOS/BITACORAS CONSULTOR
+            'general':   id_general,    # PROM/GENERAL
+            'avanzados': id_avanzados,  # PROM/AVANZADOS
+            'consultor': id_consultor,  # PROM/AVANZADOS/BITACORAS POR EL CONSULTOR
         }
 
-    def _obtener_o_crear_doc(self, titulo, parent_id, plantilla, estudiante, doc_avanzado_url=None):
+    def _obtener_o_crear_doc(self, titulo, parent_id, plantilla, estudiante):
         """
         Si el documento ya existe lo devuelve con el prefijo 'existe:'.
         Si no existe, lo crea con la plantilla y los datos del estudiante sustituidos.
@@ -210,10 +231,10 @@ class BitacorasOrquestador:
             logger.debug(f"  → Documento ya existe: '{titulo}'")
             return f'existe:{doc_id}', doc_url
 
-        contenido = self._cargar_plantilla(plantilla, estudiante, doc_avanzado_url)
+        contenido = self._cargar_plantilla(plantilla, estudiante)
         return self.drive.create_document(titulo, parent_id, contenido)
 
-    def _cargar_plantilla(self, plantilla, estudiante, doc_avanzado_url=None):
+    def _cargar_plantilla(self, plantilla, estudiante):
         """
         Carga la plantilla desde assets/ y reemplaza los placeholders
         con los datos reales del estudiante.
@@ -222,7 +243,9 @@ class BitacorasOrquestador:
           {{NOMBRE}}            → nombre completo del estudiante
           {{NIVEL}}             → nivel de ingreso
           {{PAIS_RESIDENCIA}}   → país de residencia (campo estándar GHL)
-          {{ENLACE_AVANZADO}}   → URL del doc avanzado (vacío si no aplica)
+
+        Nota: la línea "Enlace Bitácora Avanzada:" queda vacía a propósito —
+        el consultor pega ese link manualmente durante la sesión 1.
         """
         assets_dir = SKILL_DIR / "assets"
         archivo = assets_dir / (
@@ -232,12 +255,10 @@ class BitacorasOrquestador:
         try:
             contenido = archivo.read_text(encoding='utf-8')
 
-            # Sustituciones — siempre ejecutar (incluso con valores vacíos)
             sustituciones = {
                 '{{NOMBRE}}':           estudiante.get('nombre', ''),
                 '{{NIVEL}}':            estudiante.get('nivel', ''),
                 '{{PAIS_RESIDENCIA}}':  estudiante.get('pais_residencia', ''),
-                '{{ENLACE_AVANZADO}}':  doc_avanzado_url or '',
             }
 
             for placeholder, valor in sustituciones.items():

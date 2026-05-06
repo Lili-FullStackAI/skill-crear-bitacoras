@@ -39,13 +39,13 @@ Settings → Secrets and variables → Actions → New repository secret
 | `GHL_FIELD_ID_PROMOCION` | ID del custom field "Promoción" |
 | `GHL_FIELD_ID_NIVEL` | ID del custom field "Nivel de ingreso" |
 | `GHL_FIELD_ID_BITACORA_URL` | ID del custom field "Bitácora URL" |
-| `GHL_FIELD_ID_BITACORA_CONSULTOR_URL` | ID del custom field "Bitácora Consultor URL" |
 | `BITACORAS_ROOT_ID` | ID de la carpeta "BITACORAS" en Google Drive |
 | `GOOGLE_CREDENTIALS_JSON` | **El contenido completo** del JSON del Service Account |
 
 > **Notas:**
 > - "País de residencia" NO necesita un secret porque es un **campo estándar** de GHL (`contact.country`).
-> - "País de venta" NO se auto-llena en la bitácora — el consultor lo registra en la sesión 1 (cada estudiante puede vender en múltiples países).
+> - "País de venta" NO se auto-llena en la bitácora — el consultor lo registra en la sesión 1.
+> - Solo hay UN campo de link en GHL (`bitacora_url`) que apunta al doc GENERAL. El consultor pega el link de la bitácora avanzada manualmente dentro del doc GENERAL durante la sesión 1.
 
 ### 3. Caso especial: `GOOGLE_CREDENTIALS_JSON`
 
