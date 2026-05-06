@@ -107,9 +107,10 @@ class BitacorasOrquestador:
         doc_avanzado_url = None
         if avanzado:
             doc_adv_id, doc_avanzado_url = self._obtener_o_crear_doc(
-                f"Bitacora - {nombre}",
-                carpetas['avanzados'],
-                plantilla='avanzados'
+                titulo=f"Bitacora - {nombre}",
+                parent_id=carpetas['avanzados'],
+                plantilla='avanzados',
+                estudiante=est,
             )
             if not doc_adv_id:
                 logger.info(format_log_error(est, "Falla al crear documento en AVANZADOS"))
@@ -118,10 +119,11 @@ class BitacorasOrquestador:
 
         # ── Documento GENERAL (todos) ─────────────────────────────
         doc_gen_id, doc_gen_url = self._obtener_o_crear_doc(
-            f"Bitacora - {nombre}",
-            carpetas['general'],
+            titulo=f"Bitacora - {nombre}",
+            parent_id=carpetas['general'],
             plantilla='general',
-            doc_avanzado_url=doc_avanzado_url
+            estudiante=est,
+            doc_avanzado_url=doc_avanzado_url,
         )
 
         if not doc_gen_id:
@@ -197,10 +199,10 @@ class BitacorasOrquestador:
             'avanzados': id_consultor    # apunta a AVANZADOS/BITACORAS CONSULTOR
         }
 
-    def _obtener_o_crear_doc(self, titulo, parent_id, plantilla, doc_avanzado_url=None):
+    def _obtener_o_crear_doc(self, titulo, parent_id, plantilla, estudiante, doc_avanzado_url=None):
         """
         Si el documento ya existe lo devuelve con el prefijo 'existe:'.
-        Si no existe, lo crea con la plantilla indicada.
+        Si no existe, lo crea con la plantilla y los datos del estudiante sustituidos.
         Retorna (doc_id, url).
         """
         doc_id, doc_url = self.drive.document_exists(titulo, parent_id)
@@ -208,11 +210,20 @@ class BitacorasOrquestador:
             logger.debug(f"  → Documento ya existe: '{titulo}'")
             return f'existe:{doc_id}', doc_url
 
-        contenido = self._cargar_plantilla(plantilla, doc_avanzado_url)
+        contenido = self._cargar_plantilla(plantilla, estudiante, doc_avanzado_url)
         return self.drive.create_document(titulo, parent_id, contenido)
 
-    def _cargar_plantilla(self, plantilla, doc_avanzado_url=None):
-        """Carga el contenido de la plantilla desde assets/."""
+    def _cargar_plantilla(self, plantilla, estudiante, doc_avanzado_url=None):
+        """
+        Carga la plantilla desde assets/ y reemplaza los placeholders
+        con los datos reales del estudiante.
+
+        Placeholders soportados:
+          {{NOMBRE}}            → nombre completo del estudiante
+          {{NIVEL}}             → nivel de ingreso
+          {{PAIS_RESIDENCIA}}   → país de residencia (campo estándar GHL)
+          {{ENLACE_AVANZADO}}   → URL del doc avanzado (vacío si no aplica)
+        """
         assets_dir = SKILL_DIR / "assets"
         archivo = assets_dir / (
             "plantilla_general.md" if plantilla == 'general' else "plantilla_avanzados.md"
@@ -221,11 +232,17 @@ class BitacorasOrquestador:
         try:
             contenido = archivo.read_text(encoding='utf-8')
 
-            if plantilla == 'general' and doc_avanzado_url:
-                contenido = contenido.replace(
-                    'Enlace Bitácora Avanzada: ',
-                    f'Enlace Bitácora Avanzada: {doc_avanzado_url}'
-                )
+            # Sustituciones — siempre ejecutar (incluso con valores vacíos)
+            sustituciones = {
+                '{{NOMBRE}}':           estudiante.get('nombre', ''),
+                '{{NIVEL}}':            estudiante.get('nivel', ''),
+                '{{PAIS_RESIDENCIA}}':  estudiante.get('pais_residencia', ''),
+                '{{ENLACE_AVANZADO}}':  doc_avanzado_url or '',
+            }
+
+            for placeholder, valor in sustituciones.items():
+                contenido = contenido.replace(placeholder, valor)
+
             return contenido
         except Exception as e:
             logger.error(f"✗ Error cargando plantilla '{plantilla}': {str(e)}")

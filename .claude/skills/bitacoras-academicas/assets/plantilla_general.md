@@ -1,9 +1,9 @@
 Nombre:
-{Nombre Completo}
+{{NOMBRE}}
 
 TABLA DE INFORMACIÓN GENERAL
-Nivel de ingreso:        | 
-País de residencia:      | 
+Nivel de ingreso:        | {{NIVEL}}
+País de residencia:      | {{PAIS_RESIDENCIA}}
 País de Venta:           | 
 ¿Cuál es tu meta en los próximos 30 días? | 
 
@@ -15,7 +15,7 @@ Fecha de la sesión:
 Hora de la sesión:
 Consultor:
 Link de la reunión:
-Enlace Bitácora Avanzada: 
+Enlace Bitácora Avanzada: {{ENLACE_AVANZADO}}
 
 ═══════════════════════════════════════════════════════════════
 
